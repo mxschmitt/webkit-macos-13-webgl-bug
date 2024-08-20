@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         include:
-            - revision: 281886
+            - revision: 281885
               runs-on: macos-13
             - revision: 281887
               runs-on: macos-13
@@ -20,11 +20,11 @@ jobs:
     - uses: actions/checkout@v4
     - run: |
         node server.js &
-        FILENAME="${{ matrix.revision }}.zip"
-        curl --fail https://s3-us-west-2.amazonaws.com/minified-archives.webkit.org/mac-ventura-x86_64%20arm64-release/$FILENAME -o $FILENAME.zip
+        REVISION="${{ matrix.revision }}"
+        curl --fail https://s3-us-west-2.amazonaws.com/minified-archives.webkit.org/mac-ventura-x86_64%20arm64-release/$REVISION.zip -o $REVISION.zip
         mkdir browser
         cd browser
-        unzip ../$FILENAME.zip
+        unzip ../$REVISION.zip
         cd ..
         # sudo xattr -cr Release # This is needed to run the MiniBrowser on normal macOS 
         ./browser/Release/MiniBrowser.app/Contents/MacOS/MiniBrowser --url http://localhost:3001 &
