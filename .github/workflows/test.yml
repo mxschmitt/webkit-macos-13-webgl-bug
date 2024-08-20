@@ -21,7 +21,7 @@ jobs:
     - run: |
         node server.js &
         REVISION="${{ matrix.revision }}"
-        curl --fail https://s3-us-west-2.amazonaws.com/minified-archives.webkit.org/mac-ventura-x86_64%20arm64-release/$REVISION.zip -o $REVISION.zip
+        curl --fail https://s3-us-west-2.amazonaws.com/minified-archives.webkit.org/mac-ventura-x86_64%20arm64-release/$REVISION@main.zip -o $REVISION.zip
         mkdir browser
         cd browser
         unzip ../$REVISION.zip
