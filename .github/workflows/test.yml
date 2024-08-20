@@ -12,9 +12,9 @@ jobs:
       matrix:
         include:
             - revision: 281885
-              runs-on: macos-13
+              runs-on: macos-14
             - revision: 281887
-              runs-on: macos-13
+              runs-on: macos-14
       fail-fast: false
     steps:
     - uses: actions/checkout@v4
