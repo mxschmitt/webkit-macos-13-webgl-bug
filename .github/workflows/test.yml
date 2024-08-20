@@ -6,29 +6,31 @@ on:
       - main
 
 jobs:
-  test1:
-    name: test1
-    runs-on: macos-14
-    environment: Test
+  test:
+    runs-on: ${{ matrix.runs-on }}
     strategy:
-        matrix:
-            revision: [e0a393ed]
-        fail-fast: false
+      matrix:
+        include:
+            - revision: 281886
+              runs-on: macos-13
+            - revision: 281887
+              runs-on: macos-13
+      fail-fast: false
     steps:
     - uses: actions/checkout@v4
     - run: |
         node server.js &
-        REVISON="${{ matrix.revision }}"
-        curl --fail https://s3-us-west-2.amazonaws.com/minified-archives.webkit.org/mac-ventura-x86_64%20arm64-release/$REVISON.zip -o $REVISON.zip
+        FILENAME="${{ matrix.revision }}.zip"
+        curl --fail https://s3-us-west-2.amazonaws.com/minified-archives.webkit.org/mac-ventura-x86_64%20arm64-release/$FILENAME -o $FILENAME.zip
         mkdir browser
         cd browser
-        unzip ../$REVISON.zip
+        unzip ../$FILENAME.zip
         cd ..
         # sudo xattr -cr Release # This is needed to run the MiniBrowser on normal macOS 
         ./browser/Release/MiniBrowser.app/Contents/MacOS/MiniBrowser --url http://localhost:3001 &
         sleep 10
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
-        name: received
+        name: ${{ matrix.runs-on }}-with-${{ matrix.revision }}
         path: received.png
