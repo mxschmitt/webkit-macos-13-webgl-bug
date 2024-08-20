@@ -20,9 +20,12 @@ jobs:
         node server.js &
         REVISON="${{ matrix.revision }}"
         curl --fail https://s3-us-west-2.amazonaws.com/minified-archives.webkit.org/mac-ventura-x86_64%20arm64-release/$REVISON.zip -o $REVISON.zip
-        unzip $REVISON.zip
+        mkdir browser
+        cd browser
+        unzip ../$REVISON.zip
+        cd ..
         # sudo xattr -cr Release # This is needed to run the MiniBrowser on normal macOS 
-        ./Release/MiniBrowser.app/Contents/MacOS/MiniBrowser --url http://localhost:3001 &
+        ./browser/Release/MiniBrowser.app/Contents/MacOS/MiniBrowser --url http://localhost:3001 &
         sleep 10
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
