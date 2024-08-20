@@ -1,0 +1,31 @@
+name: "test1"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test1:
+    name: test1
+    runs-on: macos-14
+    environment: Test
+    strategy:
+        matrix:
+            revision: [e0a393ed]
+        fail-fast: false
+    steps:
+    - uses: actions/checkout@v4
+    - run: |
+        node server.js &
+        REVISON="${{ matrix.revision }}"
+        curl --fail https://s3-us-west-2.amazonaws.com/minified-archives.webkit.org/mac-ventura-x86_64%20arm64-release/$REVISON.zip -o $REVISON.zip
+        unzip $REVISON.zip
+        # sudo xattr -cr Release # This is needed to run the MiniBrowser on normal macOS 
+        ./Release/MiniBrowser.app/Contents/MacOS/MiniBrowser --url http://localhost:3001 &
+        sleep 10
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: received
+        path: received.png
